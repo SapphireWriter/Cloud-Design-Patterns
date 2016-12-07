@@ -30,7 +30,7 @@ Circuit-Breaker可以按照如下的状态来模仿一个断路器来实现：
 
 参考如下状态变换图：
 
-![](Circuit-Breaker.png)
+![](cache-aside-pattern.png)
 
 需要注意的是，上图中，关闭状态所用的错误计数器是基于时间的。它会以一定的时间间隔来重置。这也能够在常见错误的情况下不让Circuit-Breaker模式进入打开状态。而错误计数阈值才会令Circuit-Breaker进入到打开状态，只有当指定时间间隔内，错误计数达到阈值才能令Circuit-Breaker进入到打开状态。半开状态所使用的成功计数器则会记录成功的调用次数。Circuit-Breaker如果在之后出现了连续的成功的调用，那么Circuit-Breaker就会进入关闭状态。如果任何调用的失败了，那么Circuit-Breaker也会重新进入到打开状态，成功计数器也会重置，直到下次重新进入到半开状态。
 
