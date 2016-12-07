@@ -5,15 +5,15 @@ Cloud Design Patterns: Prescriptive Architecture Guidance for Cloud Applications
 
 Chinese translation of [Cloud Design Patterns](https://msdn.microsoft.com/en-us/library/dn568099.aspx)
 
-ÀûÓÃÒµÓàÊ±¼ä¶Ô¡¶ÔÆÉè¼ÆÄ£Ê½£ºÔÆÓ¦ÓÃ¹æ·¶¼Ü¹¹¡·½øĞĞÖĞÎÄ·­Òë¡£
+åˆ©ç”¨ä¸šä½™æ—¶é—´å¯¹ã€Šäº‘è®¾è®¡æ¨¡å¼ï¼šäº‘åº”ç”¨è§„èŒƒæ¶æ„ã€‹è¿›è¡Œä¸­æ–‡ç¿»è¯‘ã€‚
 
-### Get start ÈçºÎ¿ªÊ¼ÔÄ¶Á
+### Get start å¦‚ä½•å¼€å§‹é˜…è¯»
 
-* <https://github.com/SapphireWriter/Cloud-Design-Patterns> µÄ[SUMMARY.md](SUMMARY.md)£¨Ô´Âë£©
+* <https://github.com/SapphireWriter/Cloud-Design-Patterns> çš„[SUMMARY.md](SUMMARY.md)ï¼ˆæºç ï¼‰
 
-### Issue Òâ¼û¡¢½¨Òé
+### Issue æ„è§ã€å»ºè®®
 
-ÈçÓĞ¿±Îó¡¢Òâ¼û»ò½¨Òé»¶Ó­ÅÄ×© <https://github.com/SapphireWriter/Cloud-Design-Patterns/issues>
+å¦‚æœ‰å‹˜è¯¯ã€æ„è§æˆ–å»ºè®®æ¬¢è¿æ‹ç – <https://github.com/SapphireWriter/Cloud-Design-Patterns/issues>
 
 
 
