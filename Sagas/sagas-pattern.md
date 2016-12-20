@@ -1,23 +1,23 @@
 # Sagas
 
-Sagas����һ���������ģʽ��Ҳͬʱ���ڿ��Ƹ��������ִ�кͻع��ȡ�
+Sagas属于一个错误管理模式，也同时用于控制复杂事务的执行和回滚等。
 
-Sagas���ʼ�ĳ�������ΪһЩ��ʱ��������ʵ�֣��ʼ��ʱ���������Ϊ�����ڵ����񣩣�����Ҳ����һЩ��Խ�������ķֲ�ʽ������Щ��ʱ������������޷��򵥵�ͨ��һЩ���͵�ACIDģ��ʹ�ö���ύ��ϳ������ķ�ʽ��ʵ�֡�Sagas������ʽ�������������⣬�Ͷ��ʽ������ͬ��Sagas�Ὣ�����ֳɵ��������񣬰��������Ĳ����ͻع��Ĳ�����
-����ͼ��
+Sagas的最开始的出现是因为一些长时间的事务的实现（最开始的时候仅仅是因为数据内的事务），现在也包括一些跨越多个区域的分布式事务。这些长时间持续的事务无法简单地通过一些典型的ACID模型使用多段提交配合持有锁的方式来实现。Sagas策略正式用来解决这个问题，和多段式处理不同，Sagas会将工作分成单独的事务，包含正常的操作和回滚的操作。
+如下图：
 
 ![](Sagas.png)
 
-��ͼչʾ��һ���򵥵�Saga��������ÿ�Ԥ�����г̣���ҪԤ�������������Լ��õꡣ����޷���ȡȫ������Ϣ��������þ��ǲ�Ҫ�������Կ�������˵���϶��޷������еķ��񶼶���Ϊ�ֲ�ʽ��ACID������ʱ���Խ��⳵��Ϊ����Ϊһ�����壬���а������ȥԤ���Լ����ȡ������Ȼ����Ʊ�;Ƶ�Ҳ�ṩͬ���ķ���
+上图展示了一个简单的Saga。如果有旅客预订了行程，需要预订汽车，航班以及旅店。如果无法获取全部的信息，可能最好就是不要出发。对开发者来说，肯定无法将所有的服务都定义为分布式的ACID事务。这时可以将租车行为定义为一个整体，其中包含如何去预订以及如何取消，当然，机票和酒店也提供同样的服务。
 
-Ȼ����Щ��Ϊ���������һ�𹹳���һ����Ϊ���������߻����Խ�������Ϊ�����ܣ�����ֻ�и���Ϊ���Ľ����߲��ܹ��ٿ������Ϊ������һ����Ϊ��ɺ󣬻Ὣ��ɵ���Ϣ��¼��һ�����ϣ�����˵����һ�����У��У�֮�����ͨ��������Ϸ��ʵ���Ӧ����Ϊ����һ����Ϊʧ�ܵ�ʵ�գ���Ϊ������������ϣ�Ȼ����Ϣ���͸��ü��ϣ��Ӷ�·�ɵ�֮ǰִ�гɹ�����Ϊ��Ȼ��ع����е�����
+然后这些行为可以组合在一起构成了一个行为链。开发者还可以将整个行为链加密，这样只有该行为链的接收者才能够操控这个行为链。当一个行为完成后，会将完成的信息记录到一个集合（比如说，是一个队列）中，之后可以通过这个集合访问到对应的行为。当一个行为失败的实收，行为将本地清理完毕，然后将消息发送给该集合，从而路由到之前执行成功的行为，然后回滚所有的事务。
 
-��������߶��������г��˽�һЩ�Ļ����ͻ�֪���������Ϊ����ʵ���з��յġ�һ����˵����ǰԤ���⳵���񼸺�����ɹ�����Ϊ�⳵��˾�������㹻��ʱ���������㰲�ų���������Ԥ�����ݾ���һЩ�����ˣ�һ����Ѻ�������£�ֻ����ǰ24СʱԤ������������˸�һ������»�Ҫ�շѵģ��������Ԥ���ǶԵġ�
+如果开发者对于旅行行程了解一些的话，就会知道上面的行为链其实是有风险的。一般来说，提前预订租车服务几乎都会成功，因为租车公司都会有足够的时间来帮助你安排车辆。但是预订宾馆就有一些风险了，一般无押金的情况下，只能提前24小时预订，而航班的退改一般情况下还要收费的，所以最后预订是对的。
 
-## ʹ�þ���
+## 使用举例
 
-����ĳ�����Ϊ�������԰������Ǹ��õ��˽�Sagas����
+下面的程序作为样例可以帮助我们更好的了解Sagas策略
 
-���������һ�����͵ļ����������ʶ�Ӧ����Ϊ���е���Ϊ���ᴴ��3�������Ľ��̣�ÿһ�����̶��Ḻ��һ��ָ�������񡣷ֱ����⳵��Ԥ���Ƶ��Լ�Ԥ����Ʊ��������������
+程序会生成一个典型的集合用来访问对应的行为链中的行为，会创建3个独立的进程，每一个进程都会负责一个指定的任务。分别是租车，预订酒店以及预订机票三个独立的任务。
 
 ```
 static ActivityHost[] processes;
@@ -56,11 +56,11 @@ static void Send(Uri uri, RoutingSlip routingSlip)
 }
 ```
 
-���е�`AcitivityHost`���Ƕ��ⲿ�����һ������`RoutingSlip`�Ƕ�ǰ��˵�ļ��ϵĳ���
-�����Ǿ����һ������ļ�ʵ�֣�`ReserveHotelActivity`�Լ�`ReserveFlightActivity`��ʵ�־Ͳ��ڴ˴��г��ˣ�������`ReserveCarActivity`��ʵ�֡�������Ҫ�����ļ���������
+其中的`AcitivityHost`就是对外部服务的一个抽象，`RoutingSlip`是对前面说的集合的抽象。
+下面是具体的一个服务的简化实现，`ReserveHotelActivity`以及`ReserveFlightActivity`的实现就不在此处列出了，下面是`ReserveCarActivity`的实现。其中主要包括的几个方法：
 
-`DoWork`�Լ�`Compensate`������Activity�������������ִ��ʵ�ʲ����Լ��ع��Ĳ���������
-`WorkItemQueueAddress`�Լ�`CompensationQueueAddress`����������������Ӧ����ġ��ο����´��룺
+`DoWork`以及`Compensate`方法是Activity抽象出来的用来执行实际操作以及回滚的补偿方法。
+`WorkItemQueueAddress`以及`CompensationQueueAddress`都是用来索引到对应服务的。参考如下代码：
 
 ```
 class ReserveCarActivity : Activity
@@ -98,8 +98,8 @@ class ReserveCarActivity : Activity
 }
 ```
 
-`RoutingSlip`�ǶԳɹ���Ϊ���ϵĳ���������������Ӧ�ķ��񣬰������������У�һ������ɵ�����һ���ǵȴ�ִ�е�����`RoutingSlip`��Ҫ�����������Ӷ����Ϊ������ɹ��ͻὫ������ǰִ�У����ʧ�ܾͻ����ִ��
-��`RoutingSlip`ʹ�ö�������ǰִ�У�ʹ��ջ�����ִ�С�
+`RoutingSlip`是对成功行为集合的抽象，用来索引到对应的服务，包含了两个队列，一个是完成的任务，一个是等待执行的任务。`RoutingSlip`主要用来控制连接多个行为。如果成功就会将任务向前执行，如果失败就会向后执行
+。`RoutingSlip`使用队列来向前执行，使用栈来向后执行。
 ```
 class RoutingSlip
 {
@@ -212,7 +212,7 @@ class RoutingSlip
     }
 }
 ```
-`ActivityHost`�����`RoutingSlip`�����`ProcessNext`������������һ����Ϊ���������`DoWork()`���߷������`Compensate()`����.
+`ActivityHost`会调用`RoutingSlip`上面的`ProcessNext`方法来解析下一个行为并正向调用`DoWork()`或者反向调用`Compensate()`方法.
 
 ```
 abstract class ActivityHost
@@ -270,7 +270,7 @@ abstract class ActivityHost
 }
 ```
 
-## ��ص�����ģʽ
+## 相关的其他模式
 
-* **Data Consistency Primer** Compensating-Transactionͨ���������ع���Ҫʵ������һ����ģ�͵Ĺ��ܡ�**Data Consistency Primer**�е������ṩ�˸����������һ���Ե����Ե�˵����
+* **Data Consistency Primer** Compensating-Transaction通常被用来回滚需要实现最终一致性模型的功能。**Data Consistency Primer**中的内容提供了更多关于最终一致性的特性的说明。
 
