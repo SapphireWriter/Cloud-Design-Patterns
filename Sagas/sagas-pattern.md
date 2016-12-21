@@ -1,6 +1,6 @@
 # Sagas
 
-Sagas属于一个错误管理模式，也同时用于控制复杂事务的执行和回滚等。
+Sagas属于一个错误管理模式，也同时用于控制复杂事务的执行和回滚等。同时，[Compensating-Transaction模式](../Compensating-Transaction/compensating-transaction-pattern.md)的的实现也是也是类似于Sagas策略的，可以对比参考一下。
 
 Sagas的最开始的出现是因为一些长时间的事务的实现（最开始的时候仅仅是因为数据内的事务），现在也包括一些跨越多个区域的分布式事务。这些长时间持续的事务无法简单地通过一些典型的ACID模型使用多段提交配合持有锁的方式来实现。Sagas策略正式用来解决这个问题，和多段式处理不同，Sagas会将工作分成单独的事务，包含正常的操作和回滚的操作。
 如下图：
@@ -272,5 +272,7 @@ abstract class ActivityHost
 
 ## 相关的其他模式
 
-* **Data Consistency Primer** Compensating-Transaction通常被用来回滚需要实现最终一致性模型的功能。**Data Consistency Primer**中的内容提供了更多关于最终一致性的特性的说明。
+* **[Compensating-Transaction模式](../Compensating-Transaction/compensating-transaction-pattern.md)**。Compensating-Transaction通常被用来回滚需要实现最终一致性模型的功能，其中针对于数据一致性以及补偿失败的考虑更为详细。
+* **Data Consistency Primer**。**Data Consistency Primer**中的内容提供了更多关于最终一致性的特性的说明。
+
 
