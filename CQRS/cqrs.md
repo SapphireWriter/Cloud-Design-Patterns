@@ -213,7 +213,7 @@ public interface ProductsDomain
 
 如果考虑实现CQRS模式的话，也可以同时参考一下如下的一些资料：
 
-* 文章解释了使用CQRS模式的时候，碰到的一些常见的关于维护读写操作间数据一致性的问题，以及该如何解决这些问题。
+* [Data Consistency Primer](../Data-Consistency-Primer/data-consistency-primer.md).该文章解释了使用CQRS模式的时候，碰到的一些常见的关于维护读写操作间数据一致性的问题，以及该如何解决这些问题。
 * [Data Partitioning Guidance](../Data-Partitioning-Guidance.md).该文章描述了CQRS模式中的读写数据仓库的使用，以及如果管理以及访问才能提高扩展性，减少冲突，优化性能等。
 * [Event Sourcing 模式](../Event-Sourcing/event-sourcing-pattern.md).该模式描述了Event-Sourcing配合CQRS模式使用的更多细节，以及如何简化复杂Domain上面的任务，提高性能，扩展性以及响应时间，以及如何为事务数据提供一致性，保留处理的轨迹以及历史，并使能补偿操作等。
 * [Materialized View模式](../Materialized-View/mvp.md).CQRS模式的读模型可能包含写模型数据的具体化视图，或者用读模型来生成具体化视图。
