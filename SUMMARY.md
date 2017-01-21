@@ -8,6 +8,7 @@
     * [Sagas Pattern](Sagas/sagas-pattern.md)
     * [Command and Query Responsibility Segregation Pattern](CQRS/cqrs.md)
     * [Event Sourcing Pattern](Event-Sourcing/event-sourcing-pattern.md)
+    * [Materialized-View Pattern](Materialized-View/mvp.md)
 * [Guidance](Summary/guidance.md)
     * [Data Consistency Primer](Data-Consistency-Primer/data-consistency-primer.md)
     * [Data Partitioning Guidance](Data-Partitioning-Guidance/data-partitioning-guidance.md)
