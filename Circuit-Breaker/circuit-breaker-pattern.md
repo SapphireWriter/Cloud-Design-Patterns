@@ -201,4 +201,4 @@ if (IsOpen)
 下面的模式跟Circuit-Breaker模式也是相关的：
 
 * **[Retry模式](../Retry/retry-pattern.md)**：重试模式属于Circuit-Breaker模式的一个附属。主要处理的问题是当访问远程服务不可用的时候，令应用如何来处理可以预期的短时间的错误。
-* **Health Endpoint Monitoring模式**：Circuit-Breaker可以通过发送请求到远端的服务提供的特殊的服务来监控对面服务的的健康状态。该服务需要返回一些信息来展示其健康的状态。
+* **[Health Endpoint Monitoring](../Health-Endpoint-Monitoring/hem.md)模式**：Circuit-Breaker可以通过发送请求到远端的服务提供的特殊的服务来监控对面服务的的健康状态。该服务需要返回一些信息来展示其健康的状态。
