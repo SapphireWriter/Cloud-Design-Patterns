@@ -12,7 +12,7 @@
 
 在这种情况下，保证不同数据仓库的数据一致性就是一个比较困难的问题了。问题就在于，像是序列化以及锁的使用，都是当且仅当多个应用实例使用的相同的数据仓库才能正常工作，而且，应用使用锁的时候，持有锁的时间都是非常短的。然而，当数据被分割了或者在不同的数据仓库存在重复的数据的时候，锁定资源和序列化数据来保证一致性就会变成一个非常昂贵的操作。会给吞吐，响应，以扩展性上带来巨大的负担。因此，现代的分布式应用都不会锁定被修改的数据，并且采用一种更为松散的方式来维护一致性，也称之为最终一致性。
 
-> 想了解更多关于跨地区的分布式数据，同地协作的数据或者是复制同步数据的信息，可以参考**Data Partitioning Guidance**以及**Data Replication and Synchronization Guidance**。
+> 想了解更多关于跨地区的分布式数据，同地协作的数据或者是复制同步数据的信息，可以参考**[Data Partitioning Guidance](../Data-Partitioning-Guidance/data-partitioning-guidance.md)**以及**[Data Replication and Synchronization Guidance](../Data-Replication-and-Synchronization-Guidance/drasg.md)**。
 
 下面的章节描述了更多关于强一致性和最终一致性的信息，以及如何在分布式环境中使用不同的方法来保证数据的一致性。
 
@@ -28,7 +28,7 @@
 
 在云应用中，开发者只有在绝对必须的情况下才需要去考虑实现强一致性。例如，如果应用所更新的多个数据都在同一个数据仓库中，那么实现强一致性的好处可能就更多了，数据在这种情况下很容易仅仅锁定小段时间，不易造成大规模阻塞。然而，如果更新的数据是通过网络来进行的，跨越不同的数据仓库的进行更新的话，最好还是放弃强一致性模型。
 
-在实现了强一致性的系统中进行复制分发数据到不同地点的数据仓库的话，很可能会在进行复制分发的时候超出强一致性的事务范畴。当复制更新在执行的过程时候，一定程度上的不一致几乎是无法避免的，但是，数据最终会在同步和复制分发成功之后就重新一致了。关于更多的信息，可以参考**Data Replication and Synchronization Guidance**.
+在实现了强一致性的系统中进行复制分发数据到不同地点的数据仓库的话，很可能会在进行复制分发的时候超出强一致性的事务范畴。当复制更新在执行的过程时候，一定程度上的不一致几乎是无法避免的，但是，数据最终会在同步和复制分发成功之后就重新一致了。关于更多的信息，可以参考**[Data Replication and Synchronization Guidance](../Data-Replication-and-Synchronization-Guidance/drasg.md)**.
 
 另一个考虑保证多区域数据强一致性的方案就是通过可扩展的NoSQL数据库来进行读写。这种方法可以不用锁定数据，当然，也会带来一定的代价，就是会有关于读写数据的额外的复杂性开支。
 
@@ -79,9 +79,9 @@
 
 ## 通过幂等命令分割数据
 
-多个应用实例竞争来在同一时间修改相同的数据是另一个使得最终一致性失败的原因。如果可能的话，开发者应该尽可能设计系统来最小化这类情况。开发者应该尝试划分系统来满足并发实例的在同时执行相同的操作而互不冲突。开发者应该结构化系统，让系统以幂等的方式来执行业务逻辑而非考虑CRUD之类的操作。想了解更多的信息，可以参考**Command and Query Responsibility Segregation模式**。CQRS方案中的命令通过**Event Sourcing**模式。Event-Sourcing是通过驱动一些列事件任务来操作数据的，每个任务只是记录在一个只追加的队列中。
+多个应用实例竞争来在同一时间修改相同的数据是另一个使得最终一致性失败的原因。如果可能的话，开发者应该尽可能设计系统来最小化这类情况。开发者应该尝试划分系统来满足并发实例的在同时执行相同的操作而互不冲突。开发者应该结构化系统，让系统以幂等的方式来执行业务逻辑而非考虑CRUD之类的操作。想了解更多的信息，可以参考**[Command and Query Responsibility Segregation模式](../CQRS/cqrs.md)**。CQRS方案中的命令通过**[Event Sourcing模式](../Event-Sourcing/event-sourcing-pattern.md)**。Event-Sourcing是通过驱动一些列事件任务来操作数据的，每个任务只是记录在一个只追加的队列中。
 
-> 想了解更多关于CQRS以及通过事件驱动来实现最终一致性的话，可以参考**Command and Query Responsibility Segregation模式**。
+> 想了解更多关于CQRS以及通过事件驱动来实现最终一致性的话，可以参考**[Command and Query Responsibility Segregation模式](../CQRS/cqrs.md)**。
 
 ## 实现补偿逻辑
 
@@ -96,9 +96,9 @@
 在考虑数据一致性的时候，下面的模式以及相关信息也可以进行参考：
 
 * **[Compensating-Transaction模式](../Compensating-Transaction/compensating-transaction-pattern.md)**.该模式描述了一旦其中的某个步骤失败了，关于重置之前所做工作的策略，该模式也是实现了最终一致性模式的。
-* **Command and Query责任分离模式**.该模式描述了开发者该如何将读写数据的操作解耦。该模式可以使用相同数据的不同模型，确保不同模型的数据一致也很重要。
-* **Event Sourcing模式**.该模式经常配合CQRS模式使用，该模式可以简化复杂域模型上面的任务，增加性能，扩展性，响应能力。并且为事务性数据提供一致性，并且能够保留事件路径历史，可以方便的使能补偿操作。
-* **Data Partitioning Guidance**.在大规模云应用上，数据通常需要分块管理和访问。保证分割数据的一致性也是十分重要的。
-* **Data Replication and Synchronization Guidance**.数据的复制和同步可以很好的增强可用性和性能，确保一致性以及缩小不同地点之间数据传输所带来的消耗。
-* **Caching Guidance**.应用中缓存的数据和数据仓库中的数据可能是不一致的。**Caching Guidance**描述了Cache可以支持的过期政策，来有效减少数据的不一致。
+* **[Command and Query责任分离模式](../CQRS/cqrs.md)**.该模式描述了开发者该如何将读写数据的操作解耦。该模式可以使用相同数据的不同模型，确保不同模型的数据一致也很重要。
+* **[Event Sourcing模式](../Event-Sourcing/event-sourcing-pattern.md)**.该模式经常配合CQRS模式使用，该模式可以简化复杂域模型上面的任务，增加性能，扩展性，响应能力。并且为事务性数据提供一致性，并且能够保留事件路径历史，可以方便的使能补偿操作。
+* **[Data Partitioning Guidance](../Data-Partitioning-Guidance/data-partitioning-guidance.md)**.在大规模云应用上，数据通常需要分块管理和访问。保证分割数据的一致性也是十分重要的。
+* **[Data Replication and Synchronization Guidance](../Data-Replication-and-Synchronization-Guidance/drasg.md)**.数据的复制和同步可以很好的增强可用性和性能，确保一致性以及缩小不同地点之间数据传输所带来的消耗。
+* **[Caching Guidance](../Caching-Guidance/caching-guidance.md)**.应用中缓存的数据和数据仓库中的数据可能是不一致的。**Caching Guidance**描述了Cache可以支持的过期政策，来有效减少数据的不一致。
 * **[Cache-Aside模式](../Cache-Aside/cache-aside-pattern.md)**.**Cache-Aside模式**描述了如何根据需求去获取数据。该模式可以用来有效减少重复访问相同数据的负载。

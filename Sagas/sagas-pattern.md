@@ -273,6 +273,6 @@ abstract class ActivityHost
 ## 相关的其他模式
 
 * **[Compensating-Transaction模式](../Compensating-Transaction/compensating-transaction-pattern.md)**。Compensating-Transaction通常被用来回滚需要实现最终一致性模型的功能，其中针对于数据一致性以及补偿失败的考虑更为详细。
-* **Data Consistency Primer**。**Data Consistency Primer**中的内容提供了更多关于最终一致性的特性的说明。
+* **[Data Consistency Primer](../Data-Consistency-Primer/data-consistency-primer.md)**。**Data Consistency Primer**中的内容提供了更多关于最终一致性的特性的说明。
 
 
