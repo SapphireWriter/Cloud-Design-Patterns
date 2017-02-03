@@ -11,6 +11,8 @@
     * [Materialized-View Pattern](Materialized-View/mvp.md)
     * [Health-Endpoint Monitoring Pattern](Health-Endpoint-Monitoring/hem.md)
     * [Scheduler Agent Supervisor Pattern](Scheduler-Agent-Supervisor/sas.md)
+    * [Sharding Pattern](Sharding/sharding-pattern.md)
+    * [Index Table Pattern](Index-Table/it-pattern.md)
 * [Guidance](Summary/guidance.md)
     * [Data Consistency Primer](Data-Consistency-Primer/data-consistency-primer.md)
     * [Data Partitioning Guidance](Data-Partitioning-Guidance/data-partitioning-guidance.md)
