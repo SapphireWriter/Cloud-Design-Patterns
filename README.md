@@ -1,7 +1,7 @@
 Cloud-Design-Patterns
 ====
 
-![](Summary/Cloud.png)
+![](summary/Cloud.png)
 
 Cloud Design Patterns: Prescriptive Architecture Guidance for Cloud Applications
 
