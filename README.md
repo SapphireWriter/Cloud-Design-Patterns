@@ -1,6 +1,8 @@
 Cloud-Design-Patterns
 ====
 
+![](Summary/Cloud.png)
+
 Cloud Design Patterns: Prescriptive Architecture Guidance for Cloud Applications
 
 Chinese translation of [Cloud Design Patterns](https://msdn.microsoft.com/en-us/library/dn568099.aspx)
