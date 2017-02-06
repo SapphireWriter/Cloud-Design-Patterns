@@ -21,3 +21,4 @@
     * [Instrumentation And Telemetry Guidance](Instrumentation-And-Telemetry-Guidance/itg.md)
 * [Related Readings](Summary/related-readings.md)
     * [Pessimistic and Optimistic Locking Strategy](Pessimistic-and-Optimistic-Locking/paqls.md)
+    * [Fan-Out](Fan-Out/fo.md)
