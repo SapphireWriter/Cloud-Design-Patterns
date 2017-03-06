@@ -23,64 +23,32 @@ Event-Sourcing模式定义了一种处理由一系列事件来驱动的数据操
 
 > 参考[Materialized-View模式](../Materialized-View/mvp.md)来了解更多的详细信息。
 
-In addition, at any point in time it is possible for applications to read the history of events, and use it to materialize the current state of an entity by effectively “playing back” and consuming all the events related to that entity. This may occur on demand in order to materialize a domain object when handling a request, or through a scheduled task so that the state of the entity can be stored as a materialized view to support the presentation layer.
+此外，事件存储可以让应用在任何时候读取事件的历史，并通过对事件历史进行有效地“回放”和消耗有关该实体的所有事件来计算实体的当前状态。很多时候，可能会因为客户端请求，或通过一个预定的定时任务，来重新计算实体的当前状态。其中，定时任务可以将计算的状态生成Materialized视图，并存储起来来提高查询效率。
 
-此外，在任何时候都可以让应用读取事件的历史，并使用它来实现实体的当前状态，通过有效地“回放”和消耗有关该实体的所有事件。这可能会发生在需求，以实现一个域对象处理请求时，或通过一个预定的任务，使实体的状态可以被存储为物化视图，以支持表示层。
+图1展示了Event-Sourcing模式逻辑的概览图。其中也包括了使用事件流来创建一个Materialized视图，并与其他外部应用和系统集成，以及通过重复事件流来展示某些实体的当前状态。
 
-Figure 1 shows a logical overview of the pattern, including some of the options for using the event stream such as creating a materialized view, integrating events with external applications and systems, and replaying events to create projections of the current state of specific entities.
-
-图1展示了Event-Sourcing模式的逻辑概览，同时也包括了使用事件流来创建一个Materialized视图，与其他外部应用和系统集成，以及通过重复事件流来展示某些实体的当前状态。
-
-![](leanote://file/getImage?fileId=58b911d5c9b47e3298000000)
+![](event-sourcing1.png)
 
 图1. 关于Event-Sourcing模式的例子和概览
 
-The Event Sourcing pattern provides many advantages, including the following:
+Event-Sourcing模式有很多的优点，包括：
 
-Event-Sourcing模式提供了如下的优点，包括：
+* 事件都是不可变对象，并且存储在一个仅支持追加的队列中。任何用户界面，workflow，或者程序触发了产生事件的行动，都可以以非阻塞任务继续执行，并且这些任务可以都在后台持续执行。这一点，可以令结合事务执行过程中不会产生任何争用，可以极大地提高应用程序的性能和可扩展性，特别是对于用户界面的展示。
+* 事件是描述事件发生的简单对象，以及描述事件所代表的动作所需的相关数据。事件不会直接更新数据存储区，它们只是在适当的时候进行记录的生产者。这些方面都可以简化系统的实现和管理。
+* 事件通常在某些领域都有各自的特殊含义，相对而言，对象可能只是和数据库的表相对应的，是无法表示其在领域中的真实意义的。表只能表示系统的当前状态，而表现不了发生的事件。
+* Event-Sourcing可以有效减少并发更新所引起的冲突，因为Event-Sourcing避免了直接更新数据存储区中对象状态的要求。当然，域模型仍然需要设计来保护其自身的一致性。
+* 仅追加的时间存储可以提供Trace的线索，用来监测对数据存储区所采取的行动，并在任何时间计算当前实体状态的Materialized视图或执行事件的回放，协助测试和系统调试。此外，使用补偿事件取消更改的要求提供了一个逆转状态的历史记录，如果模型只存储当前状态，补偿回滚是无法实现的。事件列表也可用于分析应用程序性能和检测用户的行为趋势，以获得其他有用的业务信息。
+* Event-Sourcing的事件存储解耦了其生产者（产生事件的任务）和消费者（生成Materialized视图的任务等），为系统的提供了更好灵活性和可扩展性。例如，处理事件存储所发布的事件只知道事件的性质和包含的数据。执行任务的方式与触发事件的操作是解耦的。此外，可以使用多个任务可以处理事件。这一特点使得事件仓库可以很容易的配合其他服务和系统进行集成，只需要侦听由事件存储引发的新事件即可。然而，Event-Sourcing往往是非常低的level，如果有必要的话，可以对基础事件进行简单的聚合再来配合其他系统进行集成。
 
-
-• Events are immutable and so can be stored using an append-only operation. The user interface, workflow, or process that initiated the action that produced the events can continue, and the tasks that handle the events can run in the background. This, combined with the fact that there is no contention during the execution of transactions, can vastly improve performance and scalability for applications, especially for the presentation level or user interface.
-
-* 事件都是不可变对象，可以存储在一个仅支持追加的队列中。任何用户界面，workflow，或者程序触发了产生事件的行动，都可以以非阻塞继续，并且这些任务可以都在后台持续执行。这一点，结合事务执行过程中不会产生任何争用，可以极大地提高应用程序的性能和可扩展性，特别是对于用户界面的展示。
-
-• Events are simple objects that describe some action that occurred, together with any associated data required to describe the action represented by the event. Events do not directly update a data store; they are simply recorded for handling at the appropriate time. These factors can simplify implementation and management.
-
-* 事件是描述事件发生的简单对象，以及描述事件所代表的动作所需的相关数据。事件不会直接更新数据存储区，它们只是在适当的时候进行记录处理。这些因素可以简化实施和管理。
-* 
-• Events typically have meaning for a domain expert, whereas the complexity of the object-relational impedance mismatch might mean that a database table may not be clearly understood by the domain expert. Tables are artificial constructs that represent the current state of the system, not the events that occurred.
-
-* 事件通常在某些领域都有各自的特殊含义，而对应的对象可能只是和数据库的表对应的，无法表示其在领域中的意义。表只能表示系统的当前状态，而表现不了发生的事件。
-* 
-• Event sourcing can help to prevent concurrent updates from causing conflicts because it avoids the requirement to directly update objects in the data store. However, the domain model must still be designed to protect itself from requests that might result in an inconsistent state.
-
-* Event-Sourcing可以帮助防止并发更新引起冲突，因为它避免了直接更新数据存储区中对象的要求。当然，域模型仍然必须设计来保护其自身的一致性。
-• The append-only storage of events provides an audit trail that can be used to monitor actions taken against a data store, regenerate the current state as materialized views or projections by replaying the events at any time, and assist in testing and debugging the system. In addition, the requirement to use compensating events to cancel changes provides a history of changes that were reversed, which would not be the case if the model simply stored the current state. The list of events can also be used to analyze application performance and detect user behavior trends, or to obtain other useful business information.
-
-* 仅追加存储事件提供Trace的线索，可以用来监测对数据存储区所采取的行动，使当前状态的物化视图或预测事件的回放，在任何时间，并协助测试和系统调试。此外，使用补偿事件取消更改的要求提供了一个历史的变化被逆转，如果模型只存储当前状态，这将是不可能实现的。事件列表也可用于分析应用程序性能和检测用户行为趋势，或获得其他有用的业务信息。
-
-• The decoupling of the events from any tasks that perform operations in response to each event raised by the event store provides flexibility and extensibility. For example, the tasks that handle events raised by the event store are aware only of the nature of the event and the data it contains. The way that the task is executed is decoupled from the operation that triggered the event. In addition, multiple tasks can handle each event. This may enable easy integration with other services and systems that need only listen for new events raised by the event store. However, the event sourcing events tend to be very low level, and it may be necessary to generate specific integration events instead.
-
-* 对事件存储所引发的每个事件执行任何操作的任务的解耦提供了灵活性和可扩展性。例如，处理事件存储所引发的事件只知道事件的性质和包含的数据。执行任务的方式与触发事件的操作分离。此外，多个任务可以处理每个事件。这可以与其他服务和系统进行简单的集成，只需要侦听由事件存储引发的新事件。然而，溯源事件往往是非常低的level，它可能是必要的，而不是产生特定的集成事件。
-
-> Event sourcing is commonly combined with the CQRS pattern by performing the data management tasks in response to the events, and by materializing views from the stored events.
-> Event-Sourcing通常都是配合[CQRS模式]来执行数据管理任务
-
+> Event-Sourcing通常都是配合[CQRS模式](../CQRS/cqrs.md)来执行数据管理任务的。
 
 ## 实现Event-Sourcing模式的问题和顾虑
 
-Consider the following points when deciding how to implement this pattern:
-
 当在考虑实现Event-Sourcing模式的时候，需要考虑如下一些问题：
 
-• The system will only be eventually consistent when creating materialized views or generating projections of data by replaying events. There is some delay between an application adding events to the event store as the result of handling a request, the events being published, and consumers of the events handling them. During this period, new events that describe further changes to entities may have arrived at the event store.
-
-* 整个系统在创建物化视图或通过回放事件数据生成预测的时候都是不一致的，只是满足最终一致性的。应用程序将事件添加到事件存储区的过程与处理请求的结果、正在发布的事件以及处理它们的事件的消费者之间存在一些延迟。在此期间，描述实体的进一步更改的新事件可能已到达事件存储区。
+* 整个系统在创建Materialized视图或通过回放事件数据生成预测的时候都是不一致的，只能满足最终一致性的。应用程序将事件添加到事件存储区的过程与处理请求的结果、正在发布的事件以及处理它们的事件的消费者之间存在一些延迟。在此期间，描述实体的新的更新的新事件可能才到达事件存储区。
 > 可以参考[Data Consistency Primer]来了解最终一致性方面的信息
-
-• The event store is the immutable source of information, and so the event data should never be updated. The only way to update an entity in order to undo a change is to add a compensating event to the event store, much as you would use a negative transaction in accounting. If the format (rather than the data) of the persisted events needs to change, perhaps during a migration, it can be difficult to combine existing events in the store with the new version. It may be necessary to iterate through all the events making changes so that they are compliant with the new format, or add new events that use the new format. Consider using a version stamp on each version of the event schema in order to maintain both the old and the new event formats.
-
-* 事件存储是不可变的信息源，因此事件数据不应该被更新。更新实体以撤消更改的唯一方法是向事件存储添加补偿事件，就像在会计中使用负事务一样。如果持久化事件的格式（而不是数据）需要更改，可能在迁移过程中，将存储中的现有事件与新版本相结合很难。它可能需要遍历所有事件的变化使它们符合新的格式，或加用新的格式，新的事件。考虑在事件模式的每个版本上使用版本标记，以维护旧的和新的事件格式。
+- 事件存储是不可变的信息源，因此事件数据不应该被更新的。更新实体以撤消更改的唯一方法是向事件存储添加补偿事件，就像在交易系统中使用负事务一样。如果持久化事件的格式（而不是数据）需要更改，比如在迁移过程中，将存储中的现有事件与新版本事件相结合很难。可能需要遍历所有事件的变化使事件符合新的格式。考虑在事件结构中定义版本，并对每个版本上使用版本标记，以维护新旧事件的不同格式。
 
 • Multi-threaded applications and multiple instances of applications may be storing events in the event store. The consistency of events in the event store is vital, as is the order of events that affect a specific entity (the order in which changes to an entity occur affects its current state). Adding a timestamp to every event is one option that can help to avoid issues. Another common practice is to annotate each event that results from a request with an incremental identifier. If two actions attempt to add events for the same entity at the same time, the event store can reject an event that matches an existing entity identifier and event identifier.
 
