@@ -1,5 +1,13 @@
 # Summary
 
+书中包括三个部分，分别是*Patterns*,*Guidance*以及*Related Readings*。
+
+* Patterns中主要描述的是一些设计模式
+* Guidance中主要描述的是一些云设计中可能碰到的一些问题以及解决方案的权衡
+* Related Readings中主要是*Guidance*和*Pattens*中涉及到的部分知识点
+
+---
+
 * [Patterns](Summary/patterns.md)
     * [Cache-Aside Pattern](Cache-Aside/cache-aside-pattern.md)
     * [Circuit-Breaker Pattern](Circuit-Breaker/circuit-breaker-pattern.md)
@@ -13,6 +21,7 @@
     * [Scheduler Agent Supervisor Pattern](Scheduler-Agent-Supervisor/sas.md)
     * [Sharding Pattern](Sharding/sharding-pattern.md)
     * [Index Table Pattern](Index-Table/it-pattern.md)
+    * [Priority-Queue Pattern](Priority-Queue/priority-queue-pattern.md)
 * [Guidance](Summary/guidance.md)
     * [Data Consistency Primer](Data-Consistency-Primer/data-consistency-primer.md)
     * [Data Partitioning Guidance](Data-Partitioning-Guidance/data-partitioning-guidance.md)
