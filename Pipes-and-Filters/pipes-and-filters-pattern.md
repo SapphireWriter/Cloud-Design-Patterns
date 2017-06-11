@@ -234,6 +234,6 @@ public class FinalReceiverRoleEntry : RoleEntryPoint
 
 在实现管道过滤器模式的时候，可以参考如下一些其他的模式：
 
-* [Competing Consumers模式]().每个管道可能会包含一个或者更多的过滤器组件。该方法在考虑将过滤器组件并行执行的时候是不错的参考。竞争消费者模式可以令多个组件很好的分担负载提高吞吐量。每个过滤器的事例都可以参与竞争，同时过滤器的多个实例还需要保证不会处理到同一个消息。竞争消费者模式对一些细节进行了详细的描述。
-* [Compute Resource Consolidation模式]().有的时候，可以考虑将多个过滤器组合到一起来一起进行扩展，统一进行伸缩处理。而竞争资源合并模式对该情况在更多细节上提出了一些优劣方面的考虑和权衡。
-* [Compensating-Transaction模式]().一个过滤器可以作为一个处理单元来处理，也可能在有些时候需要执行回滚，或者有对应的一些补偿的操作来恢复之前消息的状态。补偿事务模式描述了如何将组件配置实现以保证最终一致性。
+* [Competing Consumers模式](../Competing-Consumers/competing-consumers-pattern.md).每个管道可能会包含一个或者更多的过滤器组件。该方法在考虑将过滤器组件并行执行的时候是不错的参考。竞争消费者模式可以令多个组件很好的分担负载提高吞吐量。每个过滤器的事例都可以参与竞争，同时过滤器的多个实例还需要保证不会处理到同一个消息。竞争消费者模式对一些细节进行了详细的描述。
+* [Compute Resource Consolidation模式](../Compute-Resource-Consolidation/compute-resource-consolidation-pattern.md).有的时候，可以考虑将多个过滤器组合到一起来一起进行扩展，统一进行伸缩处理。而竞争资源合并模式对该情况在更多细节上提出了一些优劣方面的考虑和权衡。
+* [Compensating-Transaction模式](../Compensating-Transaction/compensating-transaction-pattern.md).一个过滤器可以作为一个处理单元来处理，也可能在有些时候需要执行回滚，或者有对应的一些补偿的操作来恢复之前消息的状态。补偿事务模式描述了如何将组件配置实现以保证最终一致性。
