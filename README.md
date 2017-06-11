@@ -1,5 +1,4 @@
-Cloud-Design-Patterns
-====
+# 云设计模式
 
 ![](summary/Cloud.png)
 
@@ -16,7 +15,5 @@ Chinese translation of [Cloud Design Patterns](https://msdn.microsoft.com/en-us/
 
 ### Issue 意见、建议
 
-如有勘误、意见或建议欢迎拍砖 <https://github.com/SapphireWriter/Cloud-Design-Patterns/issues>
-
-
+如有勘误、意见或建议欢迎拍砖 [https://github.com/SapphireWriter/Cloud-Design-Patterns/issues](https://github.com/SapphireWriter/Cloud-Design-Patterns/issues)
 
